@@ -35,6 +35,8 @@ git clone https://github.com/AndreiRezende/certificadora3-SHE.git
 
 ### 3. Baixe a versão de node Js (versão miníma 20.00)
 
+[Node.js](https://nodejs.org/)
+
 ### 4. Digital o seguinte comando para baixar as depêndencias no terminal
 
 ```bash
