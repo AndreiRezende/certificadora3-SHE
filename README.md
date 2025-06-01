@@ -4,6 +4,12 @@
 
 Bem-vindo ao repositório do projeto **SHE - Shape Her Era**, desenvolvido como parte da entrega parcial da **Certificadora 3**. Este projeto busca incentivar e representar a participação feminina na tecnologia, com uma aplicação moderna e responsiva.
 
+### Tecnológias utilizadas
+
+- TypeScript
+- React
+- Vite
+
 ---
 
 ## 🧾 O que você encontrará neste repositório
