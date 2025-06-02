@@ -54,3 +54,9 @@ npm run dev
 ```
 
 ### 6. Logo após isso clica no endereço localhost (ctrl + click) que aparecerá no terminal
+
+---
+
+# Link do video das ferramentas utilizadas para executar o projeto
+
+[![Assista no YouTube](https://img.shields.io/badge/Assistir%20no-Youtube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=5s-8iZBtbUA)
