@@ -1,0 +1,28 @@
+# node modules
+/node_modules/
+
+# ambiente
+.env
+.env.*
+
+# logs
+logs/
+*.log
+
+# build
+/dist/
+/build/
+
+# cache
+.cache/
+
+# arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.njsproj
+*.sln
