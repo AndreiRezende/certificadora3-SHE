@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import logo from "../../assets/images/logo.png";
 
@@ -60,7 +60,10 @@ const Login = () => {
           </button>
         </form>
 
-        <p className={styles.footerText}> "Nós ensinamos as meninas a serem perfeitas. Devíamos ensiná-las a serem corajosas." - Reshma Saujani</p>
+        <p className={styles.registerLink}>
+          Não tem uma conta? <Link to="/Register">Cadastre-se aqui</Link>
+        </p>
+
       </div>
     </div>
   );

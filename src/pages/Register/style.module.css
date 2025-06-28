@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-.loginContainer {
+.registerContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,7 +44,7 @@
 
 }
 
-.loginCard {
+.registerCard {
   background: white;
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(90, 45, 138, 0.15);
@@ -53,7 +53,7 @@
   max-width: 400px;
 }
 
-.loginTitle {
+.registerTitle {
   font-size: 24px;
   font-weight: 600;
   color: #5a2d8a;
@@ -61,7 +61,7 @@
   text-align: center;
 }
 
-.loginForm {
+.registerForm {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -94,7 +94,7 @@
   box-shadow: 0 0 0 2px rgba(90, 45, 138, 0.2);
 }
 
-.loginButton {
+.registerButton {
   background-color: #5a2d8a;
   color: white;
   border: none;
