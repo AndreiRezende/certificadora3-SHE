@@ -25,13 +25,21 @@ export function checkToken(req, res, next) {
   try {
     const secret = process.env.SECRET;
 
-    jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret); // ⬅️ CORRIGIDO
+    req.user = decoded; 
 
     next();
   } catch (err) {
     res.status(400).json({ msg: "O Token é inválido!" });
   }
 }
+
+export const checkAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ msg: 'Apenas administradores têm acesso a esta funcionalidade.' });
+  }
+  next();
+};
 
 export const createUser = async (req, res) => {
     
@@ -161,17 +169,15 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req,res) => {
     try{
-        const user = await Users.destroy({
-            where: {
-                id: req.params.id
-            }
-        })
+        const user = await Users.findByPk(req.params.id)
         
         if(!user){
             res.status(404).json({message: "Usuário não encontrado"})
         }
 
-        res.status(200).json(user)
+        await user.destroy()
+
+        return res.status(200).json({msg: "Ideia e usuário deletado com sucesso!"})
     }catch(err){
         res.status(500).json(err)
     }

@@ -9,7 +9,7 @@ const app = express()
 
 app.use(express.json())
 
-app.use('/login', routes)
+app.use('/', routes)
 
 connection.authenticate().then(() => {
     console.log("Banco de dados conectado com sucesso")

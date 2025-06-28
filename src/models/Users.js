@@ -41,7 +41,7 @@ class Users extends Model {
     }
 
     static associate(models) {
-        this.hasMany(models.Ideias, { foreignKey: 'user_id', as: 'ideias' });
+        this.hasMany(models.Ideias, { foreignKey: 'user_id', as: 'ideias', onDelete: 'CASCADE', hooks: true });
     }
 
 }

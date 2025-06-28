@@ -31,6 +31,11 @@ class Ideias extends Model {
                     defaultValue: 0
                 },
 
+                user_id: {
+                    type: Sequelize.UUID,
+                    allowNull: false
+                }
+
             },
         
         {sequelize},
@@ -39,7 +44,7 @@ class Ideias extends Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.Users, { foreignKey: 'user_id', as: 'owner' });
+        this.belongsTo(models.Users, { foreignKey: 'user_id', as: 'owner', onDelete: 'CASCADE' });
     }
 
 }

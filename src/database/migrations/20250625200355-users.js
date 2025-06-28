@@ -42,17 +42,6 @@ module.exports = {
         allowNull: false,
       },
 
-      user_id: {
-        type: Sequelize.UUID,
-        allowNull: false,
-          references: {
-            model: 'users', // Nome da tabela de usuários
-            key: 'id'
-          },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -101,6 +90,17 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0
+      },
+
+      user_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+          references: {
+            model: 'users', // Nome da tabela de usuários
+            key: 'id'
+          },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
 
       created_at: {

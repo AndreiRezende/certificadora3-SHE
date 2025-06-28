@@ -1,75 +1,51 @@
 import crypto from "node:crypto"
 import Ideias from "../models/Ideias.js"
+import { Op } from 'sequelize';
+
 
 export const createIdeia = async (req, res) => {
+    const { title, description, category } = req.body;
+    const user_id = req.user.id; 
 
-    const {title, description, category} = req.body
-
-    if(!title || !description || !category){
-        res.status(400).json({message: "Campos obrigatórios"})
+    if (!title || !description || !category) {
+        return res.status(400).json({ message: "Campos obrigatórios" });
     }
-    
-    try{
+
+    try {
         const ideiaToCreate = {
             id: crypto.randomUUID(),
-            title: req.body.title,
-            description: req.body.description,
-            category: req.body.category
-        }
+            title,
+            description,
+            category,
+            user_id
+        };
 
-        const ideia = await Ideias.create(ideiaToCreate)
+        const ideia = await Ideias.create(ideiaToCreate);
 
-        res.status(201).json(ideia)
-    }catch(err){
-        res.status(500).json(err)
+        return res.status(201).json(ideia);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 export const getAllIdeias = async (req, res) => {
-    
-    try{
-        const ideia = await Ideias.findAll()
-
-        res.status(200).json(ideia)
-    }catch(err){
-        res.status(500).json(err)
-    }
-}
-
-export const updateIdeia = async (req, res) => {
-
-    const ideiaID = req.params.id
-
-    try{
-        const ideia = await Ideias.findByPk(ideiaID)
-        if(!ideia){
-            return res.status(404).json({message: "A ideia não existe no BD"})
+  try {
+    const userId = req.user.id; 
+    const ideias = await Ideias.findAll({
+      where: {
+        user_id: {
+          [Op.ne]: userId 
         }
+      }
+    });
 
-        if(ideia.status === "Aprovada" || ideia.status === "Rejeitada"){
-            return res.status(403).json({message: "A ideia não pode ser motificada"})
-        }
+    res.status(200).json(ideias);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 
-        const camposProibidos = ['votes', 'status'];
-        const camposInvalidos = Object.keys(req.body).filter(campo => camposProibidos.includes(campo));
-
-        if (camposInvalidos.length > 0) {
-            return res.status(400).json({
-            message: `Os seguintes campos não podem ser atualizados: ${camposInvalidos.join(', ')}`
-            });
-        }
-
-        const { title, description, category } = req.body;
-        const atualizacoes = { title, description, category };
-
-
-        await ideia.update(atualizacoes)
-
-        return res.status(200).json({message: "Ideia atualizada com sucesso!"})
-    }catch(err){ 
-        return res.status(500).json(err)
-    }
-}
 
 export const deleteIdeia = async (req,res) => {
     
@@ -81,7 +57,7 @@ export const deleteIdeia = async (req,res) => {
         })
 
         if(!ideia){
-            res.status(404).json({message: "Ideia não encontrada"})
+            return res.status(404).json({message: "Ideia não encontrada"})
         }
 
         res.status(200).json(ideia)
@@ -89,3 +65,19 @@ export const deleteIdeia = async (req,res) => {
         res.status(500).json(err)
     }
 }
+
+export const approveIdeia = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const ideia = await Ideias.findByPk(id);
+    if (!ideia) return res.status(404).json({ msg: 'Ideia não encontrada' });
+
+    ideia.status = 'Aprovada';
+    await ideia.save();
+
+    res.status(200).json({ msg: 'Ideia aprovada com sucesso!' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Erro ao aprovar ideia', error: err.message });
+  }
+};

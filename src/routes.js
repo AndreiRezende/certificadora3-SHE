@@ -1,6 +1,6 @@
 import express from 'express'
-import { createUser, updateUser, deleteUser, login, privateRoute, checkToken } from './controllers/UserControllers.js'
-import { createIdeia, getAllIdeias, deleteIdeia, updateIdeia } from './controllers/IdeiasController.js'
+import { createUser, updateUser, deleteUser, login, privateRoute, checkToken, checkAdmin } from './controllers/UserControllers.js'
+import { createIdeia, getAllIdeias, deleteIdeia, approveIdeia } from './controllers/IdeiasController.js'
 
 const router = express.Router()
 
@@ -10,9 +10,9 @@ router.get('/user/:id', checkToken, privateRoute)
 router.put('/auth/update/:id', updateUser)
 router.delete('/auth/delete/:id', deleteUser)
 
-router.post('/search/ideia', createIdeia)
-router.get('/search/allIdeia', getAllIdeias)
-router.put('/search/updateIdeia/:id', updateIdeia)
-router.delete('/search/delete/:id', deleteIdeia)
+router.post('/search/ideia', checkToken, createIdeia)
+router.get('/search/getIdeia', checkToken, getAllIdeias)
+router.delete('/search/delete/:id', checkToken, checkAdmin, deleteIdeia)
+router.put('/search/approveIdeia/:id', checkToken, checkAdmin, approveIdeia)
 
 export default router
