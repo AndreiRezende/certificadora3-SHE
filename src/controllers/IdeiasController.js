@@ -1,6 +1,7 @@
 import crypto from "node:crypto"
 import Ideias from "../models/Ideias.js"
 import { Op } from 'sequelize';
+import Users from "../models/Users.js";
 
 
 export const createIdeia = async (req, res) => {
@@ -29,7 +30,7 @@ export const createIdeia = async (req, res) => {
 };
 
 
-export const getAllIdeias = async (req, res) => {
+export const getIdeias = async (req, res) => {
   try {
     const userId = req.user.id; 
     const ideias = await Ideias.findAll({
@@ -47,24 +48,32 @@ export const getAllIdeias = async (req, res) => {
 };
 
 
-export const deleteIdeia = async (req,res) => {
-    
-    try{
-        const ideia = await Ideias.destroy({
-            where: {
-                id: req.params.id
-            }
-        })
+export const deleteIdeia = async (req, res) => {
+  try {
+    const ideia = await Ideias.findByPk(req.params.id, {
+      include: {
+        model: Users,
+        as: "owner",
+        attributes: ["name"]
+      }
+    });
 
-        if(!ideia){
-            return res.status(404).json({message: "Ideia não encontrada"})
-        }
-
-        res.status(200).json(ideia)
-    }catch(err){
-        res.status(500).json(err)
+    if (!ideia) {
+      return res.status(404).json({ message: "Ideia não encontrada" });
     }
-}
+
+    const userName = ideia.owner?.name || "usuário desconhecido";
+
+    await ideia.destroy();
+
+    return res.status(200).json({
+      msg: `Ideia deletada com sucesso do usuário ${userName}`
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Erro ao deletar a ideia", error: err.message });
+  }
+};
+
 
 export const approveIdeia = async (req, res) => {
   const { id } = req.params;
@@ -81,3 +90,15 @@ export const approveIdeia = async (req, res) => {
     res.status(500).json({ msg: 'Erro ao aprovar ideia', error: err.message });
   }
 };
+
+
+export const getAllIdeias = async (req, res) => {
+    
+    try{
+        const ideia = await Ideias.findAll()
+
+        res.status(200).json(ideia)
+    }catch(err){
+        res.status(500).json(err)
+    }
+}

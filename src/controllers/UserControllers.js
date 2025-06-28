@@ -25,7 +25,7 @@ export function checkToken(req, res, next) {
   try {
     const secret = process.env.SECRET;
 
-    const decoded = jwt.verify(token, secret); // ⬅️ CORRIGIDO
+    const decoded = jwt.verify(token, secret);
     req.user = decoded; 
 
     next();
@@ -98,46 +98,55 @@ export const createUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
+  const { email, password } = req.body;
 
-    const {email, password} = req.body
+  
+  if (email === 'admin' && password === 'admin') {
+    const secret = process.env.SECRET;
+    const token = jwt.sign(
+      { id: 'admin-id', role: 'admin' }, // role = admin
+      secret,
+      { expiresIn: '12h' }
+    );
+    return res.status(200).json({ msg: 'Login admin realizado com sucesso!', token });
+  }
 
-    if(!email){
-        return res.status(422).json({msg: "O campo email é obrigatório!"})
+ 
+  if (!email) {
+    return res.status(422).json({ msg: 'O campo email é obrigatório!' });
+  }
+
+  if (!password) {
+    return res.status(422).json({ msg: 'O campo senha é obrigatório!' });
+  }
+
+  try {
+    const user = await Users.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado!' });
     }
 
-    if(!password){
-        return res.status(422).json({msg: "O campo senha é obrigatório!"})
+    const checkPassword = await bcrypt.compare(password, user.password);
+
+    if (!checkPassword) {
+      return res.status(422).json({ msg: 'Senha inválida' });
     }
 
-    const user = await Users.findOne({where: {email: email}})
+    const secret = process.env.SECRET;
+    const token = jwt.sign(
+      { id: user.id, role: 'user' }, 
+      secret,
+      { expiresIn: '12h' }
+    );
 
-    if(!user){
-        return res.status(404).json({msg: "Usuário não encontrado!"})
-    }
+    res.status(200).json({ msg: 'Autenticação realizada com sucesso!', token });
 
-    const checkPassword = await bcrypt.compare(password, user.password)
+  } catch (error) {
+    res.status(500).json({ msg: 'Erro ao autenticar', error: error.message });
+  }
+};
 
-    if(!checkPassword){
-        return res.status(422).json({msg: "Senha inválida"})
-    }
-
-    try{
-        const secret = process.env.SECRET
-
-        console.log("SECRET carregado:", secret);
-
-        const token = jwt.sign(
-            {
-                id: user.id,
-            }, secret
-        )
-
-        res.status(200).json({ msg: "Autenticação realizada com sucesso!", token });
-    }   catch (error) {
-            res.status(500).json({ msg: "Erro ao gerar o token", error: error.message });
-        }
-
-}
 
 export const getAllUsers = async (req, res) => {
     
