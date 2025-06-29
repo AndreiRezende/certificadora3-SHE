@@ -1,33 +1,58 @@
 import React, { useState } from 'react';
 import styles from '../styles.module.css';
-import type { Idea } from '../types/idea';
+import api from '../../../services/api'
 
-interface IdeaFormProps {
-  onSubmit: (idea: Omit<Idea, 'id' | 'status' | 'votes'>) => void;
-}
-
-const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit }) => {
+const IdeaForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!title || !description || !category) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
-    onSubmit({ title, description, category });
-    // Reset form
-    setTitle('');
-    setDescription('');
-    setCategory('');
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Você precisa estar logado para enviar uma ideia.");
+      return;
+    }
+
+    try {
+      const response = await api.post(
+        "/search/ideia",
+        {
+          title,
+          description,
+          category,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 🔐 Envia o token
+          },
+        }
+      );
+
+      alert("Ideia enviada com sucesso!");
+
+      // Limpa o formulário
+      setTitle('');
+      setDescription('');
+      setCategory('');
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao enviar ideia. Verifique se você está logado.");
+    }
   };
 
   return (
     <section className={styles.formSection}>
       <h2 className={styles.sectionTitle}>Envie sua ideia</h2>
-      
+
       <form onSubmit={handleSubmit} className={styles.ideaForm}>
         <div className={styles.formGroup}>
           <label htmlFor="title" className={styles.formLabel}>Título</label>
@@ -42,7 +67,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit }) => {
             placeholder="Dê um título criativo à sua ideia"
           />
         </div>
-        
+
         <div className={styles.formGroup}>
           <label htmlFor="description" className={styles.formLabel}>Descrição</label>
           <textarea
@@ -59,7 +84,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit }) => {
             {description.length}/600 caracteres
           </small>
         </div>
-        
+
         <div className={styles.formGroup}>
           <label htmlFor="category" className={styles.formLabel}>Área STEM</label>
           <select
@@ -78,7 +103,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit }) => {
             <option value="Matemática">Matemática</option>
           </select>
         </div>
-        
+
         <button type="submit" className={styles.submitButton}>
           Enviar Ideia
         </button>

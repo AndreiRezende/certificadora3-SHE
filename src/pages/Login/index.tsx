@@ -2,18 +2,56 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import logo from "../../assets/images/logo.png";
+import api from '../../services/api'
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Lógica de autenticação aqui
-    console.log("Email:", email, "Password:", password);
-    navigate("/home");
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+ 
+  const validateEmail = (email: string): boolean => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
+
+  if (!validateEmail(email)) {
+    alert("Email inválido. Verifique o formato.");
+    return;
+  }
+
+ 
+  if (password.length < 6) {
+    alert("A senha deve ter pelo menos 6 caracteres.");
+    return;
+  }
+
+  try {
+  const { data } = await api.post('/auth', {
+    email,
+    password
+  });
+
+  const { token, user } = data;
+
+  // Armazenar o token e o usuário no localStorage
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user));
+
+  console.log("Token:", token);
+  console.log("Usuário:", user);
+
+    navigate('/home')
+  }catch{
+    alert('Senha ou email incorretos!')
+  }
+  
+ 
+};
+
 
   return (
     <div className={styles.loginContainer}>

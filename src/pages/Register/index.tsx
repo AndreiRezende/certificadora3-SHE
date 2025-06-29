@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import logo from "../../assets/images/logo.png";
+import api from '../../services/api'
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -38,8 +39,8 @@ const Register = () => {
     return regex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     if (!validatePhone(phone)) {
       alert("Telefone inválido! Use o formato (xx) xxxxx-xxxx");
@@ -66,9 +67,34 @@ const Register = () => {
       return;
     }
 
-    // Se tudo ok
-    console.log("Cadastro realizado com sucesso!");
-    navigate("/Login");
+    try {
+      await api.post('/auth/register', {
+        name,
+        phone,
+        cpf,
+        email,
+        password,
+        confirmPassword
+      });
+
+      alert("Cadastro realizado com sucesso!");
+      navigate("/Login");
+    } catch (error: any) {
+  if (error.response && error.response.data) {
+    const message = error.response.data.message || "Erro ao cadastrar usuário.";
+
+    
+    if (Array.isArray(error.response.data)) {
+      alert(error.response.data.join("\n"));
+    } else {
+      alert(message);
+    }
+  } else {
+    alert("Erro ao cadastrar usuário. Tente novamente.");
+  }
+  console.error(error);
+}
+
   };
 
   return (
