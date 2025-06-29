@@ -114,22 +114,28 @@ export const getVoteIdeia = async (req, res) => {
   }
 };
 
-
-
-export const getAllIdeias = async (req, res) => {
+export const getAllIdeiasAdmin = async (req, res) => {
+  try {
+    console.log('🔍 Buscando ideias em análise...');
     
-    try{
-        const ideia = await Ideias.findAll({
-          where: {
-            status: 'Em análise' 
-          }
-        })
+    // Usar exatamente o valor do ENUM: 'Em análise'
+    const ideias = await Ideias.findAll({
+      where: {
+        status: 'Em análise'  // Exatamente como está no ENUM
+      },
+      order: [['createdAt', 'DESC']]
+    });
 
-        res.status(200).json(ideia)
-    }catch(err){
-        res.status(500).json(err)
-    }
-}
+    console.log('📊 Ideias em análise encontradas:', ideias.length);
+    console.log('📋 Ideias:', ideias.map(i => ({ id: i.id, title: i.title, status: i.status })));
+
+    res.status(200).json(ideias);
+    
+  } catch (err) {
+    console.error('❌ Erro ao buscar ideias:', err);
+    res.status(500).json({ error: 'Erro interno do servidor', details: err.message });
+  }
+};
 
 export const voteIdeia = async (req, res) => {
   try {

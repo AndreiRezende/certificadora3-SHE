@@ -140,7 +140,16 @@ export const login = async (req, res) => {
       { expiresIn: '12h' }
     );
 
-    res.status(200).json({ msg: 'Autenticação realizada com sucesso!', token });
+    res.status(200).json({
+      msg: 'Autenticação realizada com sucesso!',
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+});
+
 
   } catch (error) {
     res.status(500).json({ msg: 'Erro ao autenticar', error: error.message });
