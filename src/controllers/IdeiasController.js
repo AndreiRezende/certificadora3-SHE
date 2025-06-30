@@ -167,16 +167,12 @@ export const voteIdeia = async (req, res) => {
 
 export const getRanking = async (req, res) => {
   try {
-    const userId = req.user.id;
 
     const ideias = await Ideias.findAll({
       where: {
         status: 'Aprovada',
         votes: {
           [Op.gt]: 0 
-        },
-        user_id: {
-          [Op.ne]: userId 
         }
       },
       order: [['votes', 'DESC']]
