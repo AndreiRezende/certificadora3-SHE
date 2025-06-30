@@ -74,20 +74,10 @@ O Git será utilizado para clonar o repositório do projeto. Verifique se está 
 git --version
 ```
 
-### 2. Faça um git clone do repositório 
+### 2. Baixe a versão de [Node.js](https://nodejs.org/) (versão 20.15.0)
 
-```bash
-git clone https://github.com/AndreiRezende/certificadora3-SHE.git
-```
+### 3. [Docker](https://www.docker.com)
 
-### 3. Baixe a versão de [Node.js](https://nodejs.org/) (versão 20.15.0)
-
-### 4. Digital o seguinte comando para baixar as depêndencias no terminal
-
-```bash
-npm install
-```
-### 5. Docker
 Necessário para levantar o banco de dados local com containers.
 
 Instalação: acesse o site do [Docker](https://www.docker.com)
@@ -98,9 +88,8 @@ Após instalar, reinicie o computador e verifique se o Docker está rodando.
 
 ```bash
 docker --version
-
 ```
-### 6. [Beekeeper Studio](https://www.beekeeperstudio.io/)
+### 4. [Beekeeper Studio](https://www.beekeeperstudio.io/)
 Interface gráfica para acessar e visualizar o banco de dados PostgreSQL.
 
 **Instalação:**
@@ -118,24 +107,59 @@ Interface gráfica para acessar e visualizar o banco de dados PostgreSQL.
    - **User**: `postgres`
    - **Password**: `postgres`
 4. Clique na aba **"Select Database"** e selecione **"Create new"** (ícone de `+`).
-5. Digite o nome do novo banco de dados como: certificadora3 
-6. Clique em **"Connect"**.
-7. Agora, volte ao terminal e execute o seguinte comando para criar as tabelas:
+5. Digite o nome do novo banco de dados como: 
+  ```bash
+certificadora3
+```
+7. Clique em **"Connect"**.
+8. Agora, volte ao terminal e execute o seguinte comando para criar as tabelas:
 
 ```bash
 npx sequelize-cli db:migrate
 ```
 
-### 7. Para rodar o sistema digite o comando no terminal
-
-```bash 
+---
+## Como Rodar o Projeto
+1. Clone o repositório
+```bash
+git clone https://github.com/AndreiRezende/certificadora3-SHE.git
+```
+2. Acesse a pasta do projeto:
+ ```bash
+cd certificadora3-SHE
+```
+3. Instale as dependências do frontend:
+ ```bash
+cd certificadora3-SHE
+npm install
+```
+4. Em outra aba do terminal, vá para a pasta backend e rode o servidor:
+ ```bash
+cd backend
+node --watch src/server.js
+```
+5.  Agora volte à pasta certificadora3-SHE (frontend) e rode o frontend:
+ ```bash
 npm run dev
 ```
 
-### 8. Logo após isso clica no endereço localhost (ctrl + click) que aparecerá no terminal
+6. Logo após isso clique no endereço localhost (ctrl + click) que aparecerá no terminal
 
 ---
 
 # Link do video das ferramentas utilizadas para executar o projeto
 
 [![Assista no YouTube](https://img.shields.io/badge/Assistir%20no-Youtube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=5s-8iZBtbUA)
+
+---
+
+## Desenvolvido por: 
+Grupo da Certificadora 3 — SHE: Shape Her Era 💜
+
+Andrei Rezende Ono
+
+Felipe Teodoro da Silva
+
+Raul Pan Bertoline
+
+Rodolfo Ferreria Sapateiro 
