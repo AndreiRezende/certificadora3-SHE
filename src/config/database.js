@@ -3,7 +3,7 @@ export default {
     host: 'localhost', 
     username: 'postgres',
     password: 'postgres',
-    database: 'usersdb',
+    database: 'certificadora3',
     define: {
         timestamp: true, 
         underscored: true,

@@ -120,9 +120,11 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
+
+    await queryInterface.dropTable('ideias');
     
     await queryInterface.dropTable('users');
 
-    await queryInterface.dropTable('ideias');
+    
   }
 };
