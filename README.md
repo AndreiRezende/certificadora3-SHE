@@ -122,28 +122,39 @@ npx sequelize-cli db:migrate
 ## Como Rodar o Projeto
 1. Clone o repositório
 ```bash
-git clone https://github.com/AndreiRezende/certificadora3-SHE.git
+git clone -b main https://github.com/AndreiRezende/certificadora3-SHE.git certificadora3_frontend
+
+git clone -b feature/backend https://github.com/AndreiRezende/certificadora3-SHE.git certificadora3_backend
 ```
-2. Acesse a pasta do projeto:
+2. Acesse a pasta do projeto forntend:
  ```bash
-cd certificadora3-SHE
+cd certificadora3_frontend
 ```
 3. Instale as dependências do frontend:
  ```bash
-cd certificadora3-SHE
+cd certificadora3_frontend
 npm install
 ```
-4. Em outra aba do terminal, vá para a pasta backend e rode o servidor:
+3. Acesse a pasta do projeto backend:
+ ```bash
+cd certificadora3_backend
+```
+4. Instale as dependências do backend:
+ ```bash
+cd certificadora3_backend
+npm install
+```
+5. Rode o servidor depois que tiver feito todas as configuração do banco de dados:
  ```bash
 cd backend
 node --watch src/server.js
 ```
-5.  Agora volte à pasta certificadora3-SHE (frontend) e rode o frontend:
+6.  Agora volte à pasta certificadora3-SHE (frontend) e rode o frontend:
  ```bash
 npm run dev
 ```
 
-6. Logo após isso clique no endereço localhost (ctrl + click) que aparecerá no terminal
+7. Logo após isso clique no endereço localhost (ctrl + click) que aparecerá no terminal
 
 ---
 
