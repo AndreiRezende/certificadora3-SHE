@@ -39,7 +39,7 @@ const IdeaForm: React.FC = () => {
 
       alert("Ideia enviada com sucesso!");
 
-      // Limpa o formulário
+      
       setTitle('');
       setDescription('');
       setCategory('');

@@ -3,26 +3,22 @@ import axios from 'axios';
 import styles from '../styles.module.css';
 import type { Idea } from '../types/idea';
 
-interface ApprovedIdeasProps {
-  // Removemos a dependência de receber ideas como prop
-  // O componente vai buscar as próprias ideias
-}
 
-const ApprovedIdeas: React.FC<ApprovedIdeasProps> = () => {
+
+const ApprovedIdeas = () => {
   const [categoryFilter, setCategoryFilter] = useState('Todas');
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [votingIdea, setVotingIdea] = useState<string | null>(null);
 
-  // Buscar ideias aprovadas do backend
+  
   const fetchApprovedIdeas = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const token = localStorage.getItem('token'); // Assumindo que você armazena o token no localStorage
-      
+      const token = localStorage.getItem('token'); 
       if (!token) {
         setError('Token de autenticação não encontrado. Faça login novamente.');
         return;
@@ -35,14 +31,12 @@ const ApprovedIdeas: React.FC<ApprovedIdeasProps> = () => {
         }
       });
 
-      console.log('📋 Ideias recebidas:', response.data);
-      
-      // Filtrar apenas ideias aprovadas
+    
+
       const approvedIdeas = response.data.filter((idea: Idea) => idea.status === 'Aprovada');
       setIdeas(approvedIdeas);
       
     } catch (error: any) {
-      console.error('❌ Erro ao buscar ideias:', error);
       
       if (error.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
@@ -56,7 +50,6 @@ const ApprovedIdeas: React.FC<ApprovedIdeasProps> = () => {
     }
   };
 
-  // Função para votar em uma ideia
   const handleVote = async (ideaId: string) => {
     try {
       setVotingIdea(ideaId);
@@ -76,13 +69,7 @@ const ApprovedIdeas: React.FC<ApprovedIdeasProps> = () => {
         }
       });
 
-      console.log('✅ Voto registrado:', response.data);
-      
-      // Atualizar a lista de ideias para refletir o novo número de votos
       await fetchApprovedIdeas();
-      
-      // Opcional: Mostrar mensagem de sucesso
-      console.log('🎉 Voto registrado com sucesso!');
       
     } catch (error: any) {
       console.error('❌ Erro ao votar:', error);
@@ -99,12 +86,12 @@ const ApprovedIdeas: React.FC<ApprovedIdeasProps> = () => {
     }
   };
 
-  // Carregar ideias quando o componente montar
+  
   useEffect(() => {
     fetchApprovedIdeas();
   }, []);
 
-  // Filtrar ideias por categoria
+ 
   const filteredIdeas = categoryFilter === 'Todas' 
     ? ideas 
     : ideas.filter(idea => idea.category === categoryFilter);

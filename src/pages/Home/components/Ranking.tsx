@@ -3,17 +3,13 @@ import axios from 'axios';
 import styles from '../styles.module.css';
 import type { Idea } from '../types/idea';
 
-interface RankingProps {
-  // Removemos a dependência de receber ideas como prop
-  // O componente vai buscar as próprias ideias do ranking
-}
 
-const Ranking: React.FC<RankingProps> = () => {
+const Ranking = () => {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Buscar ranking do backend
+
   const fetchRanking = async () => {
     try {
       setLoading(true);
@@ -26,7 +22,6 @@ const Ranking: React.FC<RankingProps> = () => {
         return;
       }
 
-      console.log('🏆 Buscando ranking das ideias...');
       
       const response = await axios.get('http://localhost:3000/search/ranking', {
         headers: {
@@ -35,11 +30,9 @@ const Ranking: React.FC<RankingProps> = () => {
         }
       });
 
-      console.log('📊 Ranking recebido:', response.data);
       setIdeas(response.data);
       
     } catch (error: any) {
-      console.error('❌ Erro ao buscar ranking:', error);
       
       if (error.response?.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
@@ -53,12 +46,12 @@ const Ranking: React.FC<RankingProps> = () => {
     }
   };
 
-  // Carregar ranking quando o componente montar
+  
   useEffect(() => {
     fetchRanking();
   }, []);
 
-  // Função para obter emoji da posição
+  
   const getPositionEmoji = (position: number) => {
     switch (position) {
       case 1: return '🥇';
@@ -68,7 +61,7 @@ const Ranking: React.FC<RankingProps> = () => {
     }
   };
 
-  // Função para obter classe CSS da posição
+
   const getPositionClass = (position: number) => {
     switch (position) {
       case 1: return styles.firstPlace;

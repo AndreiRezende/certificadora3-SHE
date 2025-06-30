@@ -3,18 +3,14 @@ import axios from 'axios';
 import styles from '../styles.module.css';
 import type { Idea } from '../types/idea';
 
-interface AdminPanelProps {
-  onModerate: (id: string, status: Idea['status']) => void;
-}
-
-const AdminPanel: React.FC<AdminPanelProps> = ({ onModerate }) => {
+const AdminPanel = () => {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const ADMIN_PASSWORD = 'admin'; // senha simples para admin
+  const ADMIN_PASSWORD = 'admin';
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,68 +27,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onModerate }) => {
     setLoading(true);
     setError(null);
     try {
-      console.log('🔍 Buscando ideias do backend...');
-      
-      // Teste com diferentes URLs para descobrir qual funciona
-      const possibleUrls = [
-        '/search/admin/allIdeias',
-        'http://localhost:3000/search/admin/allIdeias',
-        'http://localhost:5000/search/admin/allIdeias',
-        'http://localhost:8000/search/admin/allIdeias',
-        '/api/search/admin/allIdeias'
-      ];
-      
-      console.log('🌐 Tentando URL:', possibleUrls[0]);
-      
       const response = await axios.get('http://localhost:3000/search/admin/allIdeias', {
         headers: {
           'Authorization': 'Admin',
           'Content-Type': 'application/json'
         },
-        timeout: 10000 // 10 segundos de timeout
+        timeout: 10000
       });
-      
-      console.log('📦 Resposta completa do backend:', response);
-      console.log('📋 Dados recebidos:', response.data);
-      console.log('📊 Tipo dos dados:', typeof response.data);
-      console.log('📈 É array?', Array.isArray(response.data));
-      console.log('📄 Status da resposta:', response.status);
-      console.log('🔗 URL final chamada:', response.config.url);
-      
+
       if (typeof response.data === 'string') {
-        console.log('⚠️ Recebido string em vez de JSON. Primeiros 500 chars:', response.data.substring(0, 500));
-        console.log('🔍 Parece HTML?', response.data.includes('<html>'));
         setError('Servidor retornou HTML em vez de JSON. Verifique se a API está funcionando.');
         return;
       }
-      
+
       if (Array.isArray(response.data)) {
-        console.log('✅ Total de ideias recebidas:', response.data.length);
-        response.data.forEach((idea, index) => {
-          console.log(`💡 Ideia ${index + 1}:`, {
-            id: idea.id,
-            title: idea.title,
-            status: idea.status,
-            category: idea.category
-          });
-        });
         setIdeas(response.data);
       } else {
-        console.log('❌ Dados não são um array:', response.data);
         setIdeas([]);
         setError('Formato de dados inválido recebido do servidor.');
       }
     } catch (error: any) {
-      console.error('❌ Erro completo ao buscar ideias:', error);
-      console.error('📝 Detalhes do erro:', {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        url: error.config?.url,
-        baseURL: error.config?.baseURL
-      });
-      
       if (error.code === 'ECONNREFUSED') {
         setError('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
       } else if (error.response?.status === 404) {
@@ -117,61 +71,36 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onModerate }) => {
   const handleApprove = async (id: string) => {
     try {
       setLoading(true);
-      console.log('✅ Aprovando ideia:', id);
-      
-      const response = await axios.put(`http://localhost:3000/search/admin/approveIdeia/${id}`, {}, {
+      await axios.put(`http://localhost:3000/search/admin/approveIdeia/${id}`, {}, {
         headers: {
           'Authorization': 'Admin',
           'Content-Type': 'application/json'
         }
       });
-      
-      console.log('📝 Resposta da aprovação:', response.data);
-      
-      // Atualizar a lista após aprovação
       await fetchIdeas();
-      
-      // Optional: Show success message
-      console.log('🎉 Ideia aprovada com sucesso!');
-      
     } catch (error: any) {
-      console.error('❌ Erro ao aprovar ideia:', error);
       setError(`Erro ao aprovar ideia: ${error.response?.data?.msg || error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // Substitua a função handleReject no seu AdminPanel por esta versão corrigida:
-
-const handleReject = async (id: string) => {
-  try {
-    setLoading(true);
-    console.log('❌ Rejeitando ideia:', id);
-    
-    // MUDANÇA: Usar DELETE em vez de PUT
-    const response = await axios.delete(`http://localhost:3000/search/admin/delete/${id}`, {
-      headers: {
-        'Authorization': 'Admin',
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    console.log('📝 Resposta da rejeição:', response.data);
-    
-    // Atualizar a lista após rejeição
-    await fetchIdeas();
-    
-    // Optional: Show success message
-    console.log('🗑️ Ideia rejeitada com sucesso!');
-    
-  } catch (error: any) {
-    console.error('❌ Erro ao rejeitar ideia:', error);
-    setError(`Erro ao rejeitar ideia: ${error.response?.data?.message || error.response?.data?.msg || error.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleReject = async (id: string) => {
+    try {
+      setLoading(true);
+      await axios.delete(`http://localhost:3000/search/admin/delete/${id}`, {
+        headers: {
+          'Authorization': 'Admin',
+          'Content-Type': 'application/json'
+        }
+      });
+      await fetchIdeas();
+    } catch (error: any) {
+      setError(`Erro ao rejeitar ideia: ${error.response?.data?.message || error.response?.data?.msg || error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -179,7 +108,6 @@ const handleReject = async (id: string) => {
     setError(null);
   };
 
-  // Filtrar apenas ideias em análise (caso o backend não faça isso)
   const pendingIdeas = ideas.filter((idea) => idea.status === 'Em análise');
 
   if (!isAuthenticated) {
