@@ -158,9 +158,11 @@ npm run dev
 
 ---
 
-# Link do video das ferramentas utilizadas para executar o projeto
+# Links dos videos das ferramentas utilizadas para executar o projeto
 
 [![Assista no YouTube](https://img.shields.io/badge/Assistir%20no-Youtube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=5s-8iZBtbUA)
+
+[![Assista no YouTube](https://img.shields.io/badge/Assistir%20no-Youtube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=HTMjoheFVCs)
 
 ---
 
